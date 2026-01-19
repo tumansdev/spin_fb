@@ -1,26 +1,28 @@
-'use client'
-
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 /**
- * Hook to handle Zustand hydration with localStorage persistence
- * Returns true only after client-side hydration is complete
+ * Hook to detect when client-side hydration is complete.
+ * Prevents hydration mismatch between server and client when using persisted stores.
+ * 
+ * Usage:
+ * const hydrated = useHydration()
+ * {hydrated ? actualValue : '-'}
  */
-export function useHydration() {
+export function useHydration(): boolean {
   const [hydrated, setHydrated] = useState(false)
-
+  
   useEffect(() => {
     setHydrated(true)
   }, [])
-
+  
   return hydrated
 }
 
 /**
- * Hook to safely get a value that may differ between server and client
- * Returns serverValue on server, clientValue on client after hydration
+ * Alternative hook with callback for when hydration is complete
  */
-export function useHydratedValue<T>(serverValue: T, clientValue: T): T {
-  const hydrated = useHydration()
-  return hydrated ? clientValue : serverValue
+export function useOnHydration(callback: () => void): void {
+  useEffect(() => {
+    callback()
+  }, [callback])
 }

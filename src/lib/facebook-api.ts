@@ -10,7 +10,6 @@ export interface FBComment {
     id: string;
     name: string;
   };
-  permalink_url?: string;
 }
 
 export interface FBCommentsResponse {
@@ -78,7 +77,7 @@ async function fetchCommentsForId(
   limit: number
 ): Promise<{ ok: boolean; comments: FBComment[]; error?: string }> {
   const url = graphUrl(`${id}/comments`, {
-    fields: 'id,message,created_time,from{id,name},permalink_url',
+    fields: 'id,message,created_time,from',
     filter: 'stream',
     limit,
   }, accessToken);

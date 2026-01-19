@@ -1,25 +1,31 @@
 # 🔥 Active Task
 
 ## Current Focus
-✅ /toh-fix - ปรับปรุง Facebook API & Fallback
+🚀 /toh-plan - Google Sheets Import & Valentine Theme
 
 ## In Progress
-- (none)
+- [/] สร้าง Google Sheets lib
+- [ ] ปรับหน้า Import ให้รับ Google Sheets URL
+- [ ] เปลี่ยน Branding เป็น Tum jirawat / Angthong Music Love
+- [ ] เปลี่ยน Theme เป็น Valentine Pink
 
-## Just Completed
-- [x] เพิ่ม `from{id,name},permalink_url` ใน API fields
-- [x] ใช้ `comment.id` แทน index เป็น fallback (stable)
-- [x] ใช้ `permalink_url` สำหรับ profile URL fallback
-- [x] แสดง "ผู้ใช้ (ไม่เปิดเผยชื่อ)" แทน "ผู้ใช้ #own_XX"
-- [x] ปรับ warning message ให้ถูกต้อง (ไม่ต้อง Live mode)
+## Tasks
+### Phase 1: Google Sheets Integration
+- [ ] สร้าง `src/lib/google-sheets.ts`
+- [ ] ปรับ import page ให้รับ Google Sheets URL
+- [ ] Parse CSV และ validate data
 
-## Next Steps
-1. Refresh หน้าเว็บ
-2. ลองดึงข้อมูลใหม่
+### Phase 2: Branding Updates
+- [ ] เปลี่ยน Sidebar branding
+- [ ] เพิ่ม "Angthong Music Love" logo/text
+
+### Phase 3: Valentine Theme
+- [ ] เปลี่ยน CSS variables เป็น pink
+- [ ] Update gradient classes
+- [ ] ปรับ accent colors ทั้งหมด
 
 ## Blockers / Issues
-- FB Privacy limitation - บาง user ไม่เปิดเผยชื่อ (ปกติ)
+- (none)
 
 ---
 *Last updated: 2026-01-19*
-

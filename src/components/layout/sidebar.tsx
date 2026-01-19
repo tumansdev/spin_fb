@@ -10,7 +10,7 @@ import {
   Shuffle, 
   Trophy,
   Settings,
-  Music
+  Heart
 } from 'lucide-react'
 
 const navItems = [
@@ -27,15 +27,15 @@ export function Sidebar() {
   
   return (
     <aside className="w-64 border-r bg-card/50 backdrop-blur-sm flex flex-col">
-      {/* Logo */}
+      {/* Logo - Angthong Music Love */}
       <div className="p-6 border-b">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl gradient-purple flex items-center justify-center">
-            <Music className="w-5 h-5 text-white" />
+          <div className="w-12 h-12 rounded-xl gradient-pink flex items-center justify-center shadow-lg">
+            <Heart className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-lg">Angthong</h1>
-            <p className="text-xs text-muted-foreground">Music Love 🎵</p>
+            <h1 className="font-bold text-xl text-pink-400">Angthong</h1>
+            <p className="text-sm text-pink-300">Music Love 💕</p>
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@ export function Sidebar() {
               className={cn(
                 'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all',
                 isActive 
-                  ? 'bg-primary text-primary-foreground shadow-lg glow-purple' 
+                  ? 'bg-primary text-primary-foreground shadow-lg glow-pink' 
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               )}
             >
@@ -62,14 +62,17 @@ export function Sidebar() {
         })}
       </nav>
       
-      {/* Footer */}
+      {/* Footer - Developer Credit */}
       <div className="p-4 border-t">
         <div className="glass rounded-lg p-4 text-center">
           <p className="text-xs text-muted-foreground">
-            Toh Framework v1.8.1
+            พัฒนาโดย
           </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            🎫 สุ่มแจกบัตร
+          <p className="text-sm font-medium text-pink-400 mt-1">
+            Tum jirawat
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            🎫 ระบบสุ่มแจกบัตร
           </p>
         </div>
       </div>

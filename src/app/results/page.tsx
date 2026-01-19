@@ -1,7 +1,6 @@
 'use client'
 
 import { useGiveawayStore } from '@/stores/giveaway-store'
-import { useHydration } from '@/hooks/use-hydration'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -21,7 +20,6 @@ import { useToast } from '@/hooks/use-toast'
 export default function ResultsPage() {
   const { drawHistory, config } = useGiveawayStore()
   const { toast } = useToast()
-  const hydrated = useHydration()
   
   // Generate announcement text
   const generateAnnouncement = (winnerName: string, timestamp: Date) => {
@@ -68,21 +66,21 @@ export default function ResultsPage() {
         <Card>
           <CardContent className="pt-6 text-center">
             <Trophy className="w-8 h-8 mx-auto text-yellow-400" />
-            <p className="text-3xl font-bold mt-2">{hydrated ? drawHistory.length : '-'}</p>
+            <p className="text-3xl font-bold mt-2">{drawHistory.length}</p>
             <p className="text-sm text-muted-foreground">รอบที่สุ่ม</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <User className="w-8 h-8 mx-auto text-green-400" />
-            <p className="text-3xl font-bold mt-2">{hydrated ? drawHistory.filter(d => d.winner).length : '-'}</p>
+            <p className="text-3xl font-bold mt-2">{drawHistory.filter(d => d.winner).length}</p>
             <p className="text-sm text-muted-foreground">ผู้โชคดี</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <Ticket className="w-8 h-8 mx-auto text-purple-400" />
-            <p className="text-3xl font-bold mt-2">{hydrated ? drawHistory.filter(d => d.winner).length * 2 : '-'}</p>
+            <p className="text-3xl font-bold mt-2">{drawHistory.filter(d => d.winner).length * 2}</p>
             <p className="text-sm text-muted-foreground">บัตรที่แจก</p>
           </CardContent>
         </Card>

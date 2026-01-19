@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useGiveawayStore } from '@/stores/giveaway-store'
-import { useHydration } from '@/hooks/use-hydration'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,73 +15,16 @@ import {
   ExternalLink,
   MessageCircle,
   Hash,
-  AtSign,
-  Download,
-  Copy
+  AtSign
 } from 'lucide-react'
 import { Participant } from '@/types/participant'
-import { useToast } from '@/hooks/use-toast'
 
 export default function ParticipantsPage() {
   const { participants, getStatistics } = useGiveawayStore()
-  const hydrated = useHydration()
-  const { toast } = useToast()
   const stats = getStatistics()
   
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'passed' | 'failed'>('all')
-  
-  // Export to CSV
-  const exportToCSV = () => {
-    if (participants.length === 0) {
-      toast({
-        title: 'ไม่มีข้อมูล',
-        description: 'กรุณานำเข้าข้อมูลก่อน',
-        variant: 'destructive',
-      })
-      return
-    }
-    
-    const headers = ['ลำดับ', 'ชื่อผู้ใช้', 'User ID', 'ข้อความคอมเมนต์', 'สถานะ', 'ลิงก์โปรไฟล์/คอมเมนต์', 'เหตุไม่ผ่าน']
-    const rows = participants.map((p, index) => [
-      index + 1,
-      p.fbUserName,
-      p.fbUserId,
-      `"${p.commentText.replace(/"/g, '""')}"`, // Escape quotes for CSV
-      p.status === 'passed' ? 'ผ่าน' : 'ไม่ผ่าน',
-      p.fbProfileUrl,
-      p.failReasons.join('; ')
-    ])
-    
-    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n')
-    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' }) // BOM for Thai
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `participants_${new Date().toISOString().split('T')[0]}.csv`
-    a.click()
-    URL.revokeObjectURL(url)
-    
-    toast({
-      title: '💾 Export สำเร็จ!',
-      description: `ดาวน์โหลด ${participants.length} รายชื่อเป็น CSV`,
-    })
-  }
-  
-  // Copy all to clipboard
-  const copyToClipboard = () => {
-    if (participants.length === 0) return
-    
-    const text = participants.map((p, i) => 
-      `${i + 1}. ${p.fbUserName} - ${p.status === 'passed' ? '✅' : '❌'} - ${p.commentText.slice(0, 50)}...`
-    ).join('\n')
-    
-    navigator.clipboard.writeText(text)
-    toast({
-      title: 'คัดลอกแล้ว!',
-      description: `${participants.length} รายชื่อถูกคัดลอกไป clipboard`,
-    })
-  }
   
   // Filter participants
   const filteredParticipants = participants.filter((p) => {
@@ -108,16 +50,6 @@ export default function ParticipantsPage() {
             ดูและตรวจสอบสถานะผู้เข้าร่วมกิจกรรมทั้งหมด
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={copyToClipboard} disabled={participants.length === 0}>
-            <Copy className="w-4 h-4 mr-2" />
-            Copy
-          </Button>
-          <Button variant="outline" size="sm" onClick={exportToCSV} disabled={participants.length === 0}>
-            <Download className="w-4 h-4 mr-2" />
-            Export CSV
-          </Button>
-        </div>
       </div>
       
       {/* Stats */}
@@ -127,7 +59,7 @@ export default function ParticipantsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">ทั้งหมด</p>
-                <p className="text-3xl font-bold">{hydrated ? stats.total : '-'}</p>
+                <p className="text-3xl font-bold">{stats.total}</p>
               </div>
               <Users className="w-8 h-8 text-muted-foreground" />
             </div>
@@ -139,7 +71,7 @@ export default function ParticipantsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">ผ่านเงื่อนไข</p>
-                <p className="text-3xl font-bold text-green-400">{hydrated ? stats.qualified : '-'}</p>
+                <p className="text-3xl font-bold text-green-400">{stats.qualified}</p>
               </div>
               <CheckCircle className="w-8 h-8 text-green-400" />
             </div>
@@ -151,7 +83,7 @@ export default function ParticipantsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">ไม่ผ่านเงื่อนไข</p>
-                <p className="text-3xl font-bold text-red-400">{hydrated ? stats.disqualified : '-'}</p>
+                <p className="text-3xl font-bold text-red-400">{stats.disqualified}</p>
               </div>
               <XCircle className="w-8 h-8 text-red-400" />
             </div>

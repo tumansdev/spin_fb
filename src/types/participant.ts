@@ -9,6 +9,7 @@ export interface Participant {
   fbUserId: string
   fbUserName: string
   fbProfileUrl: string
+  fbProfilePicture: string // Profile picture URL
   commentText: string
   commentTime: Date
   taggedFriends: TaggedFriend[]
