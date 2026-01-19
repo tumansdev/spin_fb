@@ -40,9 +40,9 @@ export default function PrivacyPolicyPage() {
                 Introduction
               </h2>
               <p className="text-muted-foreground">
-                This Privacy Policy describes how Spin FB Giveaway ("we", "us", or "our") 
+                {`This Privacy Policy describes how Spin FB Giveaway ("we", "us", or "our") 
                 collects, uses, and shares information when you use our Facebook giveaway 
-                management application ("the App").
+                management application ("the App").`}
               </p>
               <p className="text-muted-foreground">
                 นโยบายความเป็นส่วนตัวนี้อธิบายวิธีที่ Spin FB Giveaway เก็บรวบรวม ใช้ 
@@ -65,8 +65,8 @@ export default function PrivacyPolicyPage() {
                   (ข้อมูลเพจ: ID เพจ ชื่อเพจ และ token การเข้าถึง)
                 </li>
                 <li>
-                  <strong>Post Comments:</strong> Comment ID, comment text, commenter's public name and ID 
-                  (if available based on user's privacy settings)
+                  <strong>Post Comments:</strong> Comment ID, comment text, commenter public name and ID 
+                  (if available based on user privacy settings)
                   (ความคิดเห็นในโพสต์: ID ความเห็น ข้อความ ชื่อและ ID ของผู้แสดงความคิดเห็น)
                 </li>
                 <li>
@@ -106,7 +106,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-xl font-semibold">Data Sharing / การแบ่งปันข้อมูล</h2>
               <p className="text-muted-foreground">
                 We do not sell, trade, or share your data with third parties. 
-                The only data transfer occurs between your browser and Facebook's API 
+                The only data transfer occurs between your browser and Facebook API 
                 when fetching comments.
               </p>
               <p className="text-muted-foreground">
@@ -119,12 +119,12 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-xl font-semibold">Data Deletion / การลบข้อมูล</h2>
               <p className="text-muted-foreground">
-                You can delete all stored data at any time through the Settings page 
-                ("Clear All Data" button) or by clearing your browser's localStorage.
+                {`You can delete all stored data at any time through the Settings page 
+                (Clear All Data button) or by clearing your browser localStorage.`}
               </p>
               <p className="text-muted-foreground">
                 คุณสามารถลบข้อมูลที่จัดเก็บทั้งหมดได้ตลอดเวลาผ่านหน้าตั้งค่า 
-                (ปุ่ม "ล้างข้อมูลทั้งหมด") หรือโดยการล้าง localStorage ของเบราว์เซอร์
+                (ปุ่มล้างข้อมูลทั้งหมด) หรือโดยการล้าง localStorage ของเบราว์เซอร์
               </p>
               <p className="text-muted-foreground mt-2">
                 For detailed data deletion instructions, please visit our{' '}
@@ -152,9 +152,9 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-xl font-semibold">Changes to This Policy</h2>
               <p className="text-muted-foreground">
-                We may update this Privacy Policy from time to time. We will notify you 
+                {`We may update this Privacy Policy from time to time. We will notify you 
                 of any changes by posting the new Privacy Policy on this page and updating 
-                the "Last updated" date.
+                the "Last updated" date.`}
               </p>
             </section>
           </CardContent>

@@ -40,11 +40,11 @@ export default function DataDeletionPage() {
                 <div>
                   <h3 className="font-semibold text-blue-400">Important: Local Storage Only</h3>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Spin FB Giveaway stores all data locally in your browser. 
+                    Spin FB Giveaway stores all data locally in your browser.
                     <strong> We do not store any of your data on our servers.</strong>
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Spin FB Giveaway จัดเก็บข้อมูลทั้งหมดในเบราว์เซอร์ของคุณ 
+                    Spin FB Giveaway จัดเก็บข้อมูลทั้งหมดในเบราว์เซอร์ของคุณ
                     <strong> เราไม่ได้จัดเก็บข้อมูลใดๆ ของคุณบนเซิร์ฟเวอร์ของเรา</strong>
                   </p>
                 </div>
@@ -74,9 +74,9 @@ export default function DataDeletionPage() {
                     2
                   </div>
                   <div>
-                    <p className="font-medium">Find the "Danger Zone" section</p>
+                    <p className="font-medium">Find the Danger Zone section</p>
                     <p className="text-sm text-muted-foreground">
-                      หาส่วน "Danger Zone" ที่ด้านล่างของหน้า
+                      หาส่วน Danger Zone ที่ด้านล่างของหน้า
                     </p>
                   </div>
                 </div>
@@ -85,9 +85,9 @@ export default function DataDeletionPage() {
                     3
                   </div>
                   <div>
-                    <p className="font-medium">Click "ล้างข้อมูลทั้งหมด" (Clear All Data)</p>
+                    <p className="font-medium">Click ล้างข้อมูลทั้งหมด (Clear All Data)</p>
                     <p className="text-sm text-muted-foreground">
-                      คลิกปุ่ม "ล้างข้อมูลทั้งหมด" และยืนยัน
+                      คลิกปุ่มล้างข้อมูลทั้งหมด และยืนยัน
                     </p>
                   </div>
                 </div>
@@ -113,16 +113,16 @@ export default function DataDeletionPage() {
               </h2>
               <div className="space-y-4">
                 <p className="text-muted-foreground">
-                  You can also clear all data by clearing your browser's localStorage:
+                  You can also clear all data by clearing your browser localStorage:
                 </p>
                 
                 <div className="p-4 rounded-lg bg-muted/30 space-y-3">
                   <h4 className="font-medium">For Chrome / Chromium browsers:</h4>
                   <ol className="list-decimal pl-6 space-y-2 text-sm text-muted-foreground">
                     <li>Open Developer Tools (F12 or Ctrl+Shift+I)</li>
-                    <li>Go to "Application" tab</li>
-                    <li>In the left sidebar, expand "Local Storage"</li>
-                    <li>Right-click on the site and select "Clear"</li>
+                    <li>Go to Application tab</li>
+                    <li>In the left sidebar, expand Local Storage</li>
+                    <li>Right-click on the site and select Clear</li>
                   </ol>
                 </div>
 
@@ -130,9 +130,9 @@ export default function DataDeletionPage() {
                   <h4 className="font-medium">For Firefox:</h4>
                   <ol className="list-decimal pl-6 space-y-2 text-sm text-muted-foreground">
                     <li>Open Developer Tools (F12 or Ctrl+Shift+I)</li>
-                    <li>Go to "Storage" tab</li>
-                    <li>Expand "Local Storage"</li>
-                    <li>Right-click and select "Delete All"</li>
+                    <li>Go to Storage tab</li>
+                    <li>Expand Local Storage</li>
+                    <li>Right-click and select Delete All</li>
                   </ol>
                 </div>
               </div>
@@ -161,12 +161,12 @@ export default function DataDeletionPage() {
                 Revoke App Access on Facebook
               </h2>
               <p className="text-muted-foreground mb-4">
-                To completely remove the app's access to your Facebook account:
+                To completely remove the app access to your Facebook account:
               </p>
               <ol className="list-decimal pl-6 space-y-2 text-muted-foreground">
                 <li>Go to Facebook Settings → Apps and Websites</li>
-                <li>Find "Spin FB Giveaway"</li>
-                <li>Click "Remove" to revoke all permissions</li>
+                <li>Find Spin FB Giveaway</li>
+                <li>Click Remove to revoke all permissions</li>
               </ol>
               <a 
                 href="https://www.facebook.com/settings?tab=applications" 
