@@ -1,0 +1,17 @@
+{
+  "version": "1.8.1",
+  "installedAt": "2026-01-18T07:21:51.810Z",
+  "targetDir": "D:\\toh-project\\spin_fb",
+  "ides": [
+    "claude",
+    "cursor",
+    "gemini"
+  ],
+  "components": {
+    "skills": true,
+    "agents": true,
+    "commands": true,
+    "templates": true,
+    "memory": true
+  }
+}
