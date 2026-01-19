@@ -176,19 +176,21 @@ function ParticipantCard({ participant }: { participant: Participant }) {
         </Badge>
       </div>
       
-      {/* Condition Badges */}
+      {/* Condition Badges - แสดงด้วยเครื่องหมายถูก/กากบาท */}
       <div className="flex flex-wrap gap-2 mt-3">
         <Badge variant={participant.conditions.hasTaggedFriend ? 'success' : 'destructive'} className="text-xs">
           <AtSign className="w-3 h-3 mr-1" />
-          แท็ก {participant.taggedFriends.length} คน
+          แท็ก {participant.conditions.hasTaggedFriend ? '✓' : '✗'}
         </Badge>
         <Badge variant={participant.conditions.hasHashtag ? 'success' : 'destructive'} className="text-xs">
           <Hash className="w-3 h-3 mr-1" />
-          #AngThongMusicLove
+          #AngThongMusicLove {participant.conditions.hasHashtag ? '✓' : '✗'}
         </Badge>
-        <Badge variant={participant.conditions.hasReason ? 'success' : 'destructive'} className="text-xs">
-          <MessageCircle className="w-3 h-3 mr-1" />
-          {participant.textLength} ตัวอักษร
+        <Badge variant={participant.conditions.hasLikedPage ? 'success' : 'destructive'} className="text-xs">
+          ไลค์เพจ {participant.conditions.hasLikedPage ? '✓' : '✗'}
+        </Badge>
+        <Badge variant={participant.conditions.hasSharedPost ? 'success' : 'destructive'} className="text-xs">
+          แชร์โพสต์ {participant.conditions.hasSharedPost ? '✓' : '✗'}
         </Badge>
       </div>
       
