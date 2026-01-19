@@ -45,15 +45,16 @@ export default function DrawPage() {
     setIsSpinning(true)
     setWinner(null)
     
-    // Exclude previous winners
-    const eligibleParticipants = qualifiedParticipants.filter(
+    // Draw from ALL participants (excluding previous winners)
+    // User requirement: Allow drawing failed participants but show warning
+    const eligibleParticipants = participants.filter(
       p => !previousWinnerIds.includes(p.fbUserId)
     )
     
     if (eligibleParticipants.length === 0) {
       toast({
         title: 'สุ่มครบทุกคนแล้ว!',
-        description: 'ผู้ผ่านเงื่อนไขทั้งหมดได้รับรางวัลไปแล้ว',
+        description: 'ผู้เข้าร่วมทั้งหมดได้รับรางวัลไปแล้ว',
         variant: 'destructive',
       })
       setIsSpinning(false)
@@ -71,7 +72,7 @@ export default function DrawPage() {
       if (count >= maxCount) {
         clearInterval(interval)
         
-        // Pick actual winner
+        // Pick actual winner from ALL eligible
         const result = pickWinner(eligibleParticipants, previousWinnerIds)
         setWinner(result.winner)
         setSpinSeed(result.seed)
@@ -79,14 +80,22 @@ export default function DrawPage() {
         setIsSpinning(false)
         
         if (result.winner) {
-          toast({
-            title: '🎉 ยินดีด้วย!',
-            description: `${result.winner.fbUserName} เป็นผู้โชคดี!`,
-          })
+          if (result.winner.status === 'passed') {
+            toast({
+              title: '🎉 ยินดีด้วย!',
+              description: `${result.winner.fbUserName} เป็นผู้โชคดี!`,
+            })
+          } else {
+            toast({
+              title: '⚠️ ผู้โชคดีไม่ผ่านเงื่อนไข',
+              description: 'โปรดตรวจสอบรายละเอียด',
+              variant: 'default',
+            })
+          }
         }
       }
     }, 100)
-  }, [qualifiedParticipants, previousWinnerIds, toast])
+  }, [participants, previousWinnerIds, toast])
   
   // Confirm winner
   const confirmWinner = () => {
@@ -103,8 +112,8 @@ export default function DrawPage() {
     addDrawResult(drawResult)
     
     toast({
-      title: '✅ บันทึกผลสำเร็จ!',
-      description: 'ผลการสุ่มถูกบันทึกเรียบร้อย',
+      title: 'บันทึกเรียบร้อย',
+      description: 'เพิ่มผู้ชนะในรายการแล้ว',
     })
     
     setWinner(null)
@@ -119,67 +128,113 @@ export default function DrawPage() {
   }
   
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="text-center">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-          🎰 สุ่มผู้โชคดี
+    <div className="container mx-auto py-8 max-w-4xl">
+      <div className="text-center mb-8 space-y-2">
+        <h1 className="text-4xl font-bold bg-gradient-pink bg-clip-text text-transparent">
+          สุ่มผู้โชคดี
         </h1>
-        <p className="text-muted-foreground mt-2">
-          กดปุ่มเพื่อสุ่มผู้โชคดี 1 คน รับบัตรคอนเสิร์ต 2 ใบ!
+        <p className="text-muted-foreground">
+          ระบบสุ่มผู้โชคดีจากผู้เข้าร่วมทั้งหมด {participants.length} คน
         </p>
       </div>
-      
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
-        <Card>
-          <CardContent className="pt-4 text-center">
-            <Users className="w-6 h-6 mx-auto text-muted-foreground" />
-            <p className="text-2xl font-bold mt-2">{participants.length}</p>
-            <p className="text-xs text-muted-foreground">ผู้เข้าร่วมทั้งหมด</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-green-500/30">
-          <CardContent className="pt-4 text-center">
-            <Trophy className="w-6 h-6 mx-auto text-green-400" />
-            <p className="text-2xl font-bold mt-2 text-green-400">{qualifiedParticipants.length}</p>
-            <p className="text-xs text-muted-foreground">ผ่านเงื่อนไข</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-yellow-500/30">
-          <CardContent className="pt-4 text-center">
-            <Gift className="w-6 h-6 mx-auto text-yellow-400" />
-            <p className="text-2xl font-bold mt-2 text-yellow-400">{drawHistory.length}</p>
-            <p className="text-xs text-muted-foreground">สุ่มไปแล้ว</p>
-          </CardContent>
-        </Card>
-      </div>
-      
-      {/* Spin Area */}
-      <Card className="max-w-2xl mx-auto overflow-hidden">
-        <div className="gradient-purple p-1">
-          <div className="bg-background p-8 rounded-t-lg">
-            {/* Display Area */}
-            <div className="min-h-[200px] flex items-center justify-center">
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Left Column - Stats */}
+        <div className="space-y-4">
+          <Card className="border-pink-500/20 bg-pink-500/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-pink-600">
+                ผู้เข้าร่วมทั้งหมด
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{participants.length}</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                ผ่านเงื่อนไข
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-green-500">
+                {qualifiedParticipants.length}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                ผู้โชคดีก่อนหน้า
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-yellow-500">
+                {previousWinnerIds.length}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Center - Spinner */}
+        <div className="md:col-span-2">
+          <Card className={`h-[400px] flex flex-col items-center justify-center p-8 transition-colors ${
+            winner?.status === 'failed' ? 'border-red-500 bg-red-50' : 'border-2 border-pink-500/20'
+          }`}>
+            <div className="min-h-[200px] flex items-center justify-center w-full">
               {winner ? (
                 // Winner display
-                <div className="text-center animate-in zoom-in-50 duration-500">
-                  <div className="text-8xl mb-4">🎉</div>
-                  <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                    {winner.fbUserName}
-                  </h2>
-                  <p className="text-muted-foreground mt-2">
-                    ยินดีด้วย! ได้รับบัตรคอนเสิร์ต 2 ใบ
-                  </p>
-                  <div className="flex justify-center gap-2 mt-4">
-                    <Ticket className="w-8 h-8 text-yellow-400" />
-                    <Ticket className="w-8 h-8 text-yellow-400" />
-                  </div>
-                  <Badge variant="outline" className="mt-4">
-                    Seed: {spinSeed?.slice(0, 10)}...
-                  </Badge>
+                <div className="text-center animate-in zoom-in-50 duration-500 w-full">
+                  {winner.status === 'failed' ? (
+                     // FAILED WINNER DISPLAY
+                     <div className="space-y-4">
+                       <div className="text-6xl mb-2">😢</div>
+                       <h2 className="text-2xl font-bold text-red-500">
+                         ขออภัยด้วยน้า...
+                       </h2>
+                       <div className="bg-white/80 p-4 rounded-lg border border-red-200 inline-block min-w-[300px]">
+                         <p className="font-semibold text-lg mb-2">{winner.fbUserName}</p>
+                         <p className="text-red-500 font-medium mb-1">คุณทำไม่ครบเงื่อนไข:</p>
+                         <ul className="text-sm text-muted-foreground text-left list-disc list-inside bg-red-50 p-2 rounded">
+                           {winner.failReasons.map((reason, i) => (
+                             <li key={i}>{reason}</li>
+                           ))}
+                         </ul>
+                         <p className="mt-3 text-sm font-medium text-muted-foreground">
+                           ไว้โอกาสหน้ามาร่วมกิจกรรมใหม่น้าา 💕
+                         </p>
+                       </div>
+                     </div>
+                  ) : (
+                    // PASSED WINNER DISPLAY
+                    <div className="space-y-4">
+                      {winner.fbProfilePicture ? (
+                        <img 
+                          src={winner.fbProfilePicture} 
+                          alt={winner.fbUserName}
+                          className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-yellow-400 shadow-lg object-cover"
+                        />
+                      ) : (
+                        <div className="text-8xl mb-4">🎉</div>
+                      )}
+                      <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                        {winner.fbUserName}
+                      </h2>
+                      <p className="text-muted-foreground mt-2">
+                        ยินดีด้วย! ได้รับบัตรคอนเสิร์ต 2 ใบ
+                      </p>
+                      <div className="flex justify-center gap-2 mt-4">
+                        <Ticket className="w-8 h-8 text-yellow-400" />
+                        <Ticket className="w-8 h-8 text-yellow-400" />
+                      </div>
+                      <Badge variant="outline" className="mt-4">
+                        Seed: {spinSeed?.slice(0, 10)}...
+                      </Badge>
+                    </div>
+                  )}
                 </div>
               ) : isSpinning && currentName ? (
                 // Spinning animation
@@ -207,8 +262,6 @@ export default function DrawPage() {
                 </div>
               )}
             </div>
-          </div>
-        </div>
         
         <CardContent className="p-6 space-y-4">
           {winner ? (
@@ -266,6 +319,7 @@ export default function DrawPage() {
           )}
         </CardContent>
       </Card>
+      </div>
       
       {/* Previous Winners */}
       {drawHistory.length > 0 && (
@@ -295,6 +349,7 @@ export default function DrawPage() {
           </CardContent>
         </Card>
       )}
+    </div>
     </div>
   )
 }

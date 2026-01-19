@@ -64,8 +64,12 @@ export default function ImportPage() {
     
     // Convert to Participant format with validation
     const validated = result.participants.map((p, index) => {
-      // Check if friend is tagged (has name in column C)
-      const hasTaggedFriend = p.taggedFriendName.length > 0
+      // Check pass keywords (flexible)
+      const passWords = ['ผ่าน', 'pass', 'yes', 'true', '1', 'ใช่', 'ok']
+      const checkPass = (text: string) => passWords.some(w => text.toLowerCase().includes(w))
+      
+      const hasTaggedFriend = checkPass(p.taggedFriendName) // Column C
+      const hasComment = checkPass(p.comment)               // Column B (Logic change: check for pass word)
       
       const participant: Participant = {
         id: `sheet_${index}_${Date.now()}`,
@@ -79,12 +83,11 @@ export default function ImportPage() {
         hashtags: extractHashtags(p.comment),
         textLength: getThaiTextLength(p.comment),
         conditions: {
-          // ทุกเงื่อนไขอ้างอิงจาก Google Sheet โดยตรง
-          hasLikedPage: p.likedPage,     // คอลัมน์ D
-          hasSharedPost: p.sharedPost,   // คอลัมน์ E
-          hasTaggedFriend: hasTaggedFriend, // คอลัมน์ C (มีชื่อ = ผ่าน)
-          hasHashtag: p.hasHashtag,      // คอลัมน์ F
-          hasReason: true,               // ข้อความให้ผ่านทุกคน
+          hasLikedPage: p.likedPage,       // คอลัมน์ D
+          hasSharedPost: p.sharedPost,     // คอลัมน์ E
+          hasTaggedFriend: hasTaggedFriend, // คอลัมน์ C (เช็คคำว่า ผ่าน)
+          hasHashtag: p.hasHashtag,        // คอลัมน์ F
+          hasReason: hasComment,           // คอลัมน์ B (คอมเมนต์: เช็คคำว่า ผ่าน)
         },
         status: 'pending',
         failReasons: [],
@@ -105,7 +108,9 @@ export default function ImportPage() {
       if (!participant.conditions.hasHashtag) {
         failReasons.push('ไม่มี #AngThongMusicLove')
       }
-      // ไม่ตรวจ text length
+      if (!participant.conditions.hasReason) {
+        failReasons.push('ไม่ได้คอมเมนต์') // New condition
+      }
       
       participant.failReasons = failReasons
       participant.status = failReasons.length === 0 ? 'passed' : 'failed'

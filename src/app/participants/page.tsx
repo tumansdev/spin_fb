@@ -177,10 +177,15 @@ function ParticipantCard({ participant }: { participant: Participant }) {
       </div>
       
       {/* Condition Badges - แสดงด้วยเครื่องหมายถูก/กากบาท */}
+      {/* Condition Badges - แสดง 5 รายการ */}
       <div className="flex flex-wrap gap-2 mt-3">
         <Badge variant={participant.conditions.hasTaggedFriend ? 'success' : 'destructive'} className="text-xs">
           <AtSign className="w-3 h-3 mr-1" />
           แท็ก {participant.conditions.hasTaggedFriend ? '✓' : '✗'}
+        </Badge>
+        <Badge variant={participant.conditions.hasReason ? 'success' : 'destructive'} className="text-xs">
+          <MessageCircle className="w-3 h-3 mr-1" />
+          คอมเมนต์ {participant.conditions.hasReason ? '✓' : '✗'}
         </Badge>
         <Badge variant={participant.conditions.hasHashtag ? 'success' : 'destructive'} className="text-xs">
           <Hash className="w-3 h-3 mr-1" />
