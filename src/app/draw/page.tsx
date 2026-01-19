@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
+import { useHydration } from '@/hooks/use-hydration'
 import { 
   Shuffle, 
   Trophy,
@@ -22,6 +23,7 @@ import Link from 'next/link'
 export default function DrawPage() {
   const { participants, drawHistory, addDrawResult, getQualifiedParticipants } = useGiveawayStore()
   const { toast } = useToast()
+  const hydrated = useHydration()
   
   const qualifiedParticipants = getQualifiedParticipants()
   const previousWinnerIds = drawHistory.map(d => d.winner?.fbUserId).filter(Boolean) as string[]
@@ -135,7 +137,7 @@ export default function DrawPage() {
         <Card>
           <CardContent className="pt-4 text-center">
             <Users className="w-6 h-6 mx-auto text-muted-foreground" />
-            <p className="text-2xl font-bold mt-2">{participants.length}</p>
+            <p className="text-2xl font-bold mt-2">{hydrated ? participants.length : '-'}</p>
             <p className="text-xs text-muted-foreground">ผู้เข้าร่วมทั้งหมด</p>
           </CardContent>
         </Card>
@@ -143,7 +145,7 @@ export default function DrawPage() {
         <Card className="border-green-500/30">
           <CardContent className="pt-4 text-center">
             <Trophy className="w-6 h-6 mx-auto text-green-400" />
-            <p className="text-2xl font-bold mt-2 text-green-400">{qualifiedParticipants.length}</p>
+            <p className="text-2xl font-bold mt-2 text-green-400">{hydrated ? qualifiedParticipants.length : '-'}</p>
             <p className="text-xs text-muted-foreground">ผ่านเงื่อนไข</p>
           </CardContent>
         </Card>
@@ -151,7 +153,7 @@ export default function DrawPage() {
         <Card className="border-yellow-500/30">
           <CardContent className="pt-4 text-center">
             <Gift className="w-6 h-6 mx-auto text-yellow-400" />
-            <p className="text-2xl font-bold mt-2 text-yellow-400">{drawHistory.length}</p>
+            <p className="text-2xl font-bold mt-2 text-yellow-400">{hydrated ? drawHistory.length : '-'}</p>
             <p className="text-xs text-muted-foreground">สุ่มไปแล้ว</p>
           </CardContent>
         </Card>

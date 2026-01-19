@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
+import { useHydration } from '@/hooks/use-hydration'
 import { 
   Facebook, 
   Download,
@@ -37,6 +38,7 @@ import { Participant, TaggedFriend } from '@/types/participant'
 export default function ImportPage() {
   const { addParticipants, clearParticipants, participants, config, setParticipants } = useGiveawayStore()
   const { toast } = useToast()
+  const hydrated = useHydration()
   
   // Facebook API state
   const [accessToken, setAccessToken] = useState('')
@@ -181,21 +183,32 @@ export default function ImportPage() {
     setFetchedComments(result.comments)
     
     // Convert to Participant format
-    const rawParticipants = result.comments.map((comment, index) => {
-      const userId = comment.from?.id || `unknown_${index}`
-      const userName = comment.from?.name || `ผู้ใช้ #${userId.slice(-6)}`
+    // Use comment.id as fallback (stable) instead of index (can change with re-fetch)
+    const rawParticipants = result.comments.map((comment) => {
+      const hasFromData = Boolean(comment.from?.id)
+      const userId = comment.from?.id ?? `commenter_${comment.id}`
+      const userName = comment.from?.name ?? 'ผู้ใช้ (ไม่เปิดเผยชื่อ)'
+      const profileUrl = comment.from?.id 
+        ? `https://facebook.com/${comment.from.id}` 
+        : (comment.permalink_url ?? '')
+      
       return {
         id: `fb_${comment.id}`,
         fbUserId: userId,
         fbUserName: userName,
-        fbProfileUrl: comment.from?.id ? `https://facebook.com/${comment.from.id}` : '',
+        fbProfileUrl: profileUrl,
         commentText: comment.message || '',
         commentTime: new Date(comment.created_time),
         taggedFriends: [] as TaggedFriend[],
         hashtags: [] as string[],
         textLength: 0,
+        _hasRealName: hasFromData, // Track for warning
       }
     })
+    
+    // Check how many users have unknown names
+    const unknownCount = rawParticipants.filter(p => !p._hasRealName).length
+    const unknownPercent = Math.round((unknownCount / rawParticipants.length) * 100)
     
     setProgress(80)
     
@@ -209,10 +222,20 @@ export default function ImportPage() {
     setPreview(dedupedParticipants)
     setStep('preview')
     
-    toast({
-      title: '🎉 ดึงข้อมูลสำเร็จ!',
-      description: `พบ ${result.comments.length} คอมเมนต์ → ${dedupedParticipants.length} รายชื่อ`,
-    })
+    // Show warning if many users have unknown names
+    if (unknownPercent > 50) {
+      toast({
+        title: '⚠️ ผู้ใช้บางส่วนไม่เปิดเผยชื่อ',
+        description: `${unknownPercent}% ของคอมเมนต์ถูกจำกัดโดย privacy ของ FB แต่ยังสุ่มได้! (กดดู permalink เพื่อเปิด FB)`,
+        variant: 'default',
+        duration: 8000,
+      })
+    } else {
+      toast({
+        title: '🎉 ดึงข้อมูลสำเร็จ!',
+        description: `พบ ${result.comments.length} คอมเมนต์ → ${dedupedParticipants.length} รายชื่อ`,
+      })
+    }
     
     setIsLoading(false)
   }, [selectedPostId, selectedPage, config, toast])
@@ -285,21 +308,32 @@ export default function ImportPage() {
     setFetchedComments(result.comments)
     
     // Convert to Participant format
-    const rawParticipants = result.comments.map((comment, index) => {
-      const userId = comment.from?.id || `unknown_${index}`
-      const userName = comment.from?.name || `ผู้ใช้ #${userId.slice(-6)}`
+    // Use comment.id as fallback (stable) instead of index (can change with re-fetch)
+    const rawParticipants = result.comments.map((comment) => {
+      const hasFromData = Boolean(comment.from?.id)
+      const userId = comment.from?.id ?? `commenter_${comment.id}`
+      const userName = comment.from?.name ?? 'ผู้ใช้ (ไม่เปิดเผยชื่อ)'
+      const profileUrl = comment.from?.id 
+        ? `https://facebook.com/${comment.from.id}` 
+        : (comment.permalink_url ?? '')
+      
       return {
         id: `fb_${comment.id}`,
         fbUserId: userId,
         fbUserName: userName,
-        fbProfileUrl: comment.from?.id ? `https://facebook.com/${comment.from.id}` : '',
+        fbProfileUrl: profileUrl,
         commentText: comment.message || '',
         commentTime: new Date(comment.created_time),
         taggedFriends: [] as TaggedFriend[],
         hashtags: [] as string[],
         textLength: 0,
+        _hasRealName: hasFromData, // Track for warning
       }
     })
+    
+    // Check how many users have unknown names
+    const unknownCount = rawParticipants.filter(p => !p._hasRealName).length
+    const unknownPercent = Math.round((unknownCount / rawParticipants.length) * 100)
     
     setProgress(80)
     
@@ -313,10 +347,20 @@ export default function ImportPage() {
     setPreview(dedupedParticipants)
     setStep('preview')
     
-    toast({
-      title: '🎉 ดึงข้อมูลสำเร็จ!',
-      description: `พบ ${result.comments.length} คอมเมนต์ → ${dedupedParticipants.length} รายชื่อ`,
-    })
+    // Show warning if many users have unknown names
+    if (unknownPercent > 50) {
+      toast({
+        title: '⚠️ ผู้ใช้บางส่วนไม่เปิดเผยชื่อ',
+        description: `${unknownPercent}% ของคอมเมนต์ถูกจำกัดโดย privacy ของ FB แต่ยังสุ่มได้! (กดดู permalink เพื่อเปิด FB)`,
+        variant: 'default',
+        duration: 8000,
+      })
+    } else {
+      toast({
+        title: '🎉 ดึงข้อมูลสำเร็จ!',
+        description: `พบ ${result.comments.length} คอมเมนต์ → ${dedupedParticipants.length} รายชื่อ`,
+      })
+    }
     
     setIsLoading(false)
   }, [directPhotoId, selectedPage, config, toast])
@@ -355,7 +399,7 @@ export default function ImportPage() {
         <CardHeader>
           <CardTitle className="text-lg flex items-center justify-between">
             <span>📊 สถานะปัจจุบัน</span>
-            {participants.length > 0 && (
+            {hydrated && participants.length > 0 && (
               <Button variant="outline" size="sm" onClick={handleClearAll}>
                 <Trash2 className="w-4 h-4 mr-2" />
                 ล้างทั้งหมด
@@ -366,10 +410,10 @@ export default function ImportPage() {
         <CardContent>
           <div className="flex items-center gap-6">
             <div>
-              <span className="text-4xl font-bold">{participants.length}</span>
+              <span className="text-4xl font-bold">{hydrated ? participants.length : '-'}</span>
               <span className="text-lg text-muted-foreground ml-2">รายชื่อในระบบ</span>
             </div>
-            {participants.length > 0 && (
+            {hydrated && participants.length > 0 && (
               <>
                 <Badge variant="success" className="text-lg px-3 py-1">
                   <CheckCircle className="w-4 h-4 mr-1" />

@@ -1,6 +1,7 @@
 'use client'
 
 import { useGiveawayStore } from '@/stores/giveaway-store'
+import { useHydration } from '@/hooks/use-hydration'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -18,6 +19,7 @@ import Link from 'next/link'
 
 export default function DashboardPage() {
   const { participants, drawHistory, config, getStatistics } = useGiveawayStore()
+  const hydrated = useHydration()
   const stats = getStatistics()
   
   const lastWinner = drawHistory[0]?.winner
@@ -50,7 +52,7 @@ export default function DashboardPage() {
             <Users className="h-4 w-4 text-purple-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{stats.total}</div>
+            <div className="text-3xl font-bold">{hydrated ? stats.total : '-'}</div>
             <p className="text-xs text-muted-foreground">
               จากคอมเมนต์ใต้โพส
             </p>
@@ -63,7 +65,7 @@ export default function DashboardPage() {
             <CheckCircle className="h-4 w-4 text-green-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-green-400">{stats.qualified}</div>
+            <div className="text-3xl font-bold text-green-400">{hydrated ? stats.qualified : '-'}</div>
             <p className="text-xs text-muted-foreground">
               พร้อมลุ้นรางวัล
             </p>
@@ -76,7 +78,7 @@ export default function DashboardPage() {
             <XCircle className="h-4 w-4 text-red-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-red-400">{stats.disqualified}</div>
+            <div className="text-3xl font-bold text-red-400">{hydrated ? stats.disqualified : '-'}</div>
             <p className="text-xs text-muted-foreground">
               ไม่ครบกติกา
             </p>
@@ -89,7 +91,7 @@ export default function DashboardPage() {
             <Trophy className="h-4 w-4 text-yellow-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-yellow-400">{drawHistory.length}</div>
+            <div className="text-3xl font-bold text-yellow-400">{hydrated ? drawHistory.length : '-'}</div>
             <p className="text-xs text-muted-foreground">
               รอบที่สุ่มไปแล้ว
             </p>
