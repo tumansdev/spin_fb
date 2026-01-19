@@ -79,17 +79,18 @@ export default function ImportPage() {
         hashtags: extractHashtags(p.comment),
         textLength: getThaiTextLength(p.comment),
         conditions: {
-          hasLikedPage: config.likeVerification === 'skip' ? true : p.likedPage,
-          hasSharedPost: config.shareVerification === 'skip' ? true : p.sharedPost,
-          hasTaggedFriend: !config.enableTag || hasTaggedFriend,
-          hasHashtag: !config.enableHashtag || p.hasHashtag, // ใช้ค่าจาก Sheet โดยตรง
-          hasReason: !config.enableMinLength || getThaiTextLength(p.comment) >= config.minTextLength,
+          // ทุกเงื่อนไขอ้างอิงจาก Google Sheet โดยตรง
+          hasLikedPage: p.likedPage,     // คอลัมน์ D
+          hasSharedPost: p.sharedPost,   // คอลัมน์ E
+          hasTaggedFriend: hasTaggedFriend, // คอลัมน์ C (มีชื่อ = ผ่าน)
+          hasHashtag: p.hasHashtag,      // คอลัมน์ F
+          hasReason: true,               // ข้อความให้ผ่านทุกคน
         },
         status: 'pending',
         failReasons: [],
       }
       
-      // Validate conditions
+      // Validate conditions - อ้างอิงจาก Sheet
       const failReasons: string[] = []
       
       if (!participant.conditions.hasLikedPage) {
@@ -101,12 +102,10 @@ export default function ImportPage() {
       if (!participant.conditions.hasTaggedFriend) {
         failReasons.push('ไม่ได้แท็กเพื่อน')
       }
-      if (config.enableHashtag && !participant.conditions.hasHashtag) {
-        failReasons.push(`ไม่มี ${config.requiredHashtag}`)
+      if (!participant.conditions.hasHashtag) {
+        failReasons.push('ไม่มี #AngThongMusicLove')
       }
-      if (config.enableMinLength && !participant.conditions.hasReason) {
-        failReasons.push(`ข้อความสั้นเกินไป (${participant.textLength}/${config.minTextLength})`)
-      }
+      // ไม่ตรวจ text length
       
       participant.failReasons = failReasons
       participant.status = failReasons.length === 0 ? 'passed' : 'failed'
