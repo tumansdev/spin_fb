@@ -195,6 +195,7 @@ export const defaultConfig: GiveawayConfig = {
   enableMinLength: true,
   likeVerification: 'skip',
   shareVerification: 'skip',
+  lockedWinnerName: '',
 }
 
 export const mockStats = {

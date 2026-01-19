@@ -15,6 +15,7 @@ import {
   RotateCcw,
   Hash,
   Users,
+  Trophy,
   MessageCircle,
   ThumbsUp,
   Share2,
@@ -36,6 +37,7 @@ export default function SettingsPage() {
     enableTag: config.enableTag ?? true,
     likeVerification: config.likeVerification,
     shareVerification: config.shareVerification,
+    lockedWinnerName: config.lockedWinnerName || '',
   })
   
   const handleSave = () => {
@@ -58,6 +60,7 @@ export default function SettingsPage() {
       enableTag: true,
       likeVerification: 'skip',
       shareVerification: 'skip',
+      lockedWinnerName: '',
     })
   }
   
@@ -227,6 +230,34 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
         
+        {/* Lock Winner Settings */}
+        <Card className="border-yellow-500/50">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-yellow-500" />
+              ล็อคผลรางวัล (ลับ)
+            </CardTitle>
+            <CardDescription>
+              ระบุชื่อผู้โชคดีที่ต้องการล็อคผล (ถ้ามี)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <Label htmlFor="lockedWinnerName">ชื่อผู้โชคดี (ต้องตรงกับชื่อเฟสบุ๊ค)</Label>
+              <Input
+                id="lockedWinnerName"
+                value={formData.lockedWinnerName || ''}
+                onChange={(e) => setFormData({ ...formData, lockedWinnerName: e.target.value })}
+                placeholder="เช่น สมชาย มานะ"
+                className="bg-background border-yellow-500/30 focus:border-yellow-500"
+              />
+              <p className="text-xs text-muted-foreground">
+                * หากระบุชื่อ ระบบจะพยายามล็อคให้คนนี้ได้รับรางวัล (ถ้ามีชื่อในรายการ)
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Verification Settings */}
         <Card>
           <CardHeader>

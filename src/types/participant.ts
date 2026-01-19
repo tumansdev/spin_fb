@@ -52,4 +52,6 @@ export interface GiveawayConfig {
   // Like/Share verification
   likeVerification: 'skip' | 'manual'
   shareVerification: 'skip' | 'manual'
+  // Locked winner setting
+  lockedWinnerName?: string // Name to force win
 }
