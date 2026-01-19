@@ -196,14 +196,14 @@ export default function DrawPage() {
                          ขออภัยด้วยน้า...
                        </h2>
                        <div className="bg-white/80 p-4 rounded-lg border border-red-200 inline-block min-w-[300px]">
-                         <p className="font-semibold text-lg mb-2">{winner.fbUserName}</p>
+                         <p className="font-semibold text-lg mb-2 text-black">{winner.fbUserName}</p>
                          <p className="text-red-500 font-medium mb-1">คุณทำไม่ครบเงื่อนไข:</p>
-                         <ul className="text-sm text-muted-foreground text-left list-disc list-inside bg-red-50 p-2 rounded">
+                         <ul className="text-sm text-gray-700 text-left list-disc list-inside bg-red-50 p-2 rounded">
                            {winner.failReasons.map((reason, i) => (
                              <li key={i}>{reason}</li>
                            ))}
                          </ul>
-                         <p className="mt-3 text-sm font-medium text-muted-foreground">
+                         <p className="mt-3 text-sm font-medium text-gray-500">
                            ไว้โอกาสหน้ามาร่วมกิจกรรมใหม่น้าา 💕
                          </p>
                        </div>
