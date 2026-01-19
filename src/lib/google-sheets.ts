@@ -142,9 +142,17 @@ export async function fetchGoogleSheet(sheetUrl: string): Promise<SheetFetchResu
       
       // Parse boolean values - flexible matching
       const passWords = ['ผ่าน', 'pass', 'yes', 'true', '1', 'ใช่', 'ok']
-      const likedPage = passWords.some(w => likedPageRaw.includes(w))
-      const sharedPost = passWords.some(w => sharedPostRaw.includes(w))
-      const hasHashtag = passWords.some(w => hashtagRaw.includes(w))
+      const failWords = ['ไม่', 'fail', 'no', 'false', '0']
+      
+      const checkPass = (text: string) => {
+        const isFailed = failWords.some(w => text.includes(w))
+        if (isFailed) return false
+        return passWords.some(w => text.includes(w))
+      }
+      
+      const likedPage = checkPass(likedPageRaw)
+      const sharedPost = checkPass(sharedPostRaw)
+      const hasHashtag = checkPass(hashtagRaw)
       
       participants.push({
         name,

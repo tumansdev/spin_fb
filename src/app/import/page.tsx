@@ -66,7 +66,13 @@ export default function ImportPage() {
     const validated = result.participants.map((p, index) => {
       // Check pass keywords (flexible)
       const passWords = ['ผ่าน', 'pass', 'yes', 'true', '1', 'ใช่', 'ok']
-      const checkPass = (text: string) => passWords.some(w => text.toLowerCase().includes(w))
+      const failWords = ['ไม่', 'fail', 'no', 'false', '0']
+      
+      const checkPass = (text: string) => {
+        const isFailed = failWords.some(w => text.toLowerCase().includes(w))
+        if (isFailed) return false
+        return passWords.some(w => text.toLowerCase().includes(w))
+      }
       
       const hasTaggedFriend = checkPass(p.taggedFriendName) // Column C
       const hasComment = checkPass(p.comment)               // Column B (Logic change: check for pass word)
