@@ -4,9 +4,10 @@
 export interface SheetParticipant {
   name: string
   comment: string
-  tagCount: number
+  taggedFriendName: string // ชื่อเพื่อนที่แท็ก
   likedPage: boolean
   sharedPost: boolean
+  hasHashtag: boolean
 }
 
 export interface SheetFetchResult {
@@ -89,7 +90,7 @@ function parseCSV(csvText: string): string[][] {
 
 /**
  * Fetch and parse Google Sheets data
- * Expected columns: ชื่อ | คอมเมนต์ | แท็กเพื่อน | ไลค์เพจ | แชร์โพสต์
+ * Expected columns: ชื่อ | คอมเมนต์ | แท็กเพื่อน | ไลค์เพจ | แชร์โพสต์ | แฮชแท็ก
  */
 export async function fetchGoogleSheet(sheetUrl: string): Promise<SheetFetchResult> {
   try {
@@ -134,28 +135,24 @@ export async function fetchGoogleSheet(sheetUrl: string): Promise<SheetFetchResu
       
       const name = row[0]?.trim() || `ผู้เข้าร่วม #${i}`
       const comment = row[1]?.trim() || ''
-      const tagCountRaw = row[2]?.trim() || '0'
+      const taggedFriendName = row[2]?.trim() || '' // Column C - ชื่อเพื่อนที่แท็ก
       const likedPageRaw = row[3]?.trim().toLowerCase() || ''
       const sharedPostRaw = row[4]?.trim().toLowerCase() || ''
-      
-      // Parse tag count - accept number or count @mentions
-      let tagCount = parseInt(tagCountRaw, 10)
-      if (isNaN(tagCount)) {
-        // Count @ symbols if not a number
-        tagCount = (tagCountRaw.match(/@/g) || []).length
-      }
+      const hashtagRaw = row[5]?.trim().toLowerCase() || ''
       
       // Parse boolean values - flexible matching
       const passWords = ['ผ่าน', 'pass', 'yes', 'true', '1', 'ใช่', 'ok']
       const likedPage = passWords.some(w => likedPageRaw.includes(w))
       const sharedPost = passWords.some(w => sharedPostRaw.includes(w))
+      const hasHashtag = passWords.some(w => hashtagRaw.includes(w))
       
       participants.push({
         name,
         comment,
-        tagCount,
+        taggedFriendName,
         likedPage,
         sharedPost,
+        hasHashtag,
       })
     }
     

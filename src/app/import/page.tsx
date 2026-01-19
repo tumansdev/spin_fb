@@ -64,6 +64,9 @@ export default function ImportPage() {
     
     // Convert to Participant format with validation
     const validated = result.participants.map((p, index) => {
+      // Check if friend is tagged (has name in column C)
+      const hasTaggedFriend = p.taggedFriendName.length > 0
+      
       const participant: Participant = {
         id: `sheet_${index}_${Date.now()}`,
         fbUserId: `user_${index}`,
@@ -72,17 +75,14 @@ export default function ImportPage() {
         fbProfilePicture: '',
         commentText: p.comment,
         commentTime: new Date(),
-        taggedFriends: Array(p.tagCount).fill(null).map((_, i) => ({ 
-          id: `friend_${i}`, 
-          name: `เพื่อน ${i + 1}` 
-        })) as TaggedFriend[],
+        taggedFriends: hasTaggedFriend ? [{ name: p.taggedFriendName }] as TaggedFriend[] : [],
         hashtags: extractHashtags(p.comment),
         textLength: getThaiTextLength(p.comment),
         conditions: {
           hasLikedPage: config.likeVerification === 'skip' ? true : p.likedPage,
           hasSharedPost: config.shareVerification === 'skip' ? true : p.sharedPost,
-          hasTaggedFriend: p.tagCount >= config.minTaggedFriends,
-          hasHashtag: !config.enableHashtag || p.comment.toLowerCase().includes(config.requiredHashtag.toLowerCase()),
+          hasTaggedFriend: !config.enableTag || hasTaggedFriend,
+          hasHashtag: !config.enableHashtag || p.hasHashtag, // ใช้ค่าจาก Sheet โดยตรง
           hasReason: !config.enableMinLength || getThaiTextLength(p.comment) >= config.minTextLength,
         },
         status: 'pending',
@@ -99,7 +99,7 @@ export default function ImportPage() {
         failReasons.push('ไม่ได้แชร์โพสต์')
       }
       if (!participant.conditions.hasTaggedFriend) {
-        failReasons.push(`แท็กเพื่อนไม่ครบ (${p.tagCount}/${config.minTaggedFriends})`)
+        failReasons.push('ไม่ได้แท็กเพื่อน')
       }
       if (config.enableHashtag && !participant.conditions.hasHashtag) {
         failReasons.push(`ไม่มี ${config.requiredHashtag}`)
@@ -190,14 +190,15 @@ export default function ImportPage() {
                 <div className="space-y-2">
                   <p className="font-medium">1. สร้าง Google Sheet ตาม Format นี้:</p>
                   <div className="bg-muted/50 p-3 rounded text-sm font-mono">
-                    <div className="grid grid-cols-5 gap-2 text-xs">
-                      <span className="bg-pink-500/20 px-2 py-1 rounded text-center">ชื่อ</span>
-                      <span className="bg-pink-500/20 px-2 py-1 rounded text-center">คอมเมนต์</span>
-                      <span className="bg-pink-500/20 px-2 py-1 rounded text-center">แท็ก</span>
-                      <span className="bg-pink-500/20 px-2 py-1 rounded text-center">ไลค์</span>
-                      <span className="bg-pink-500/20 px-2 py-1 rounded text-center">แชร์</span>
+                    <div className="grid grid-cols-6 gap-1 text-xs">
+                      <span className="bg-pink-500/20 px-1 py-1 rounded text-center">ชื่อ</span>
+                      <span className="bg-pink-500/20 px-1 py-1 rounded text-center">คอมเมนต์</span>
+                      <span className="bg-pink-500/20 px-1 py-1 rounded text-center">แท็กเพื่อน</span>
+                      <span className="bg-pink-500/20 px-1 py-1 rounded text-center">ไลค์เพจ</span>
+                      <span className="bg-pink-500/20 px-1 py-1 rounded text-center">แชร์โพสต์</span>
+                      <span className="bg-pink-500/20 px-1 py-1 rounded text-center">แฮชแท็ก</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-2">💡 แท็ก = จำนวนคน, ไลค์/แชร์ = ผ่าน หรือ ไม่ผ่าน</p>
+                    <p className="text-xs text-muted-foreground mt-2">💡 แท็กเพื่อน = ชื่อเพื่อน, อื่นๆ = ผ่าน หรือ ไม่ผ่าน</p>
                   </div>
                 </div>
                 <div className="space-y-2">
