@@ -73,32 +73,14 @@ export default function DrawPage() {
         clearInterval(interval)
         
         // Pick actual winner
-        // Check for locked winner (Force Win)
+
+        
         let finalWinner: Participant | null = null
-        let seed = spinSeed || generateSeed() // Fallback seed
-        
-        // Use config from store
-        const { config } = useGiveawayStore.getState()
-        
-        if (config.lockedWinnerName && config.lockedWinnerName.trim() !== '') {
-          const lockedName = config.lockedWinnerName.trim().toLowerCase()
-          // Find in eligible OR all participants? 
-          // Rule: Must be in appropriate list. Prioritize eligible.
-          const forcedWinner = eligibleParticipants.find(p => 
-            p.fbUserName.toLowerCase().includes(lockedName) || 
-            p.fbUserName.toLowerCase() === lockedName
-          )
-          
-          if (forcedWinner) {
-             finalWinner = forcedWinner
-          }
-        }
-        
-        if (!finalWinner) {
-           const result = pickWinner(eligibleParticipants, previousWinnerIds)
-           finalWinner = result.winner
-           seed = result.seed
-        }
+        let seed = spinSeed || generateSeed()
+
+        const pickResult = pickWinner(eligibleParticipants, previousWinnerIds)
+        finalWinner = pickResult.winner
+        seed = pickResult.seed
 
         const result = { winner: finalWinner, seed }
         
